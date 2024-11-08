@@ -3,21 +3,18 @@ import { Loader } from '../components/Loader';
 import { getPeople } from '../api';
 import { Person } from '../types';
 import { PersonLink } from '../components/PersonLink';
+import { useParams } from 'react-router-dom';
 
 export const PeoplePage = () => {
   const [people, setPeople] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
-  const [selectedSlug, setSelectedSlug] = useState('');
+  const { slug } = useParams<{ slug: string }>();
 
   const findSlug = (list: Person[], name: string) => {
     const person = list.find(pers => pers.name === name);
 
     return person ? person.slug : null;
-  };
-
-  const handleRowClick = (slug: string) => {
-    setSelectedSlug(slug);
   };
 
   useEffect(() => {
@@ -74,9 +71,7 @@ export const PeoplePage = () => {
                     data-cy="person"
                     key={person.slug}
                     className={
-                      selectedSlug === person.slug
-                        ? 'has-background-warning'
-                        : ''
+                      slug === person.slug ? 'has-background-warning' : ''
                     }
                   >
                     <td>
@@ -84,7 +79,6 @@ export const PeoplePage = () => {
                         name={person.name}
                         sex={person.sex}
                         slug={findSlug(people, person.name)}
-                        onClick={handleRowClick}
                       />
                     </td>
 
@@ -97,7 +91,6 @@ export const PeoplePage = () => {
                           name={person.motherName}
                           sex={'f'}
                           slug={findSlug(people, person.motherName)}
-                          onClick={handleRowClick}
                         />
                       ) : (
                         '-'
@@ -109,7 +102,6 @@ export const PeoplePage = () => {
                           name={person.fatherName}
                           sex={'m'}
                           slug={findSlug(people, person.fatherName)}
-                          onClick={handleRowClick}
                         />
                       ) : (
                         '-'
